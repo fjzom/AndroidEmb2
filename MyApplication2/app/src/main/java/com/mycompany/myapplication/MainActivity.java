@@ -1,10 +1,13 @@
 package com.mycompany.myapplication;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -48,5 +51,12 @@ public class MainActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void startActivity(View view) {
+        Intent newActivity = new Intent(this,MainActivity2.class);
+        EditText text =(EditText) findViewById(R.id.editText);
+        newActivity.putExtra("Edit Text", text.getText().toString());
+        startActivity(newActivity);
     }
 }
