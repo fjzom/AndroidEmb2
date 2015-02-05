@@ -1,5 +1,7 @@
 package com.mycompany.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -55,8 +57,23 @@ public class MainActivity extends ActionBarActivity {
 
     public void startActivity(View view) {
         Intent newActivity = new Intent(this,MainActivity2.class);
+        String message;
         EditText text =(EditText) findViewById(R.id.editText);
-        newActivity.putExtra("Edit Text", text.getText().toString());
-        startActivity(newActivity);
+        message = text.getText().toString();
+        if (message.trim().isEmpty()){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("Error");
+            dialog.setMessage("Por favor ingresa algun caracter en el Edit Text");
+            dialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }else {
+            newActivity.putExtra("Edit Text", message);
+            startActivity(newActivity);
+        }
     }
 }
