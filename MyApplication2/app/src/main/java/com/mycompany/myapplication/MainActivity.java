@@ -57,23 +57,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void startActivity(View view) {
         Intent newActivity = new Intent(this,MainActivity2.class);
-        String message;
-        EditText text =(EditText) findViewById(R.id.editText);
-        message = text.getText().toString();
-        if (message.trim().isEmpty()){
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle("Error");
-            dialog.setMessage("Por favor ingresa algun caracter en el Edit Text");
-            dialog.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
-        }else {
-            newActivity.putExtra("Edit Text", message);
-            startActivity(newActivity);
-        }
+        startActivity(newActivity);
+
     }
 }
