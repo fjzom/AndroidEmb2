@@ -1,24 +1,14 @@
 package com.mycompany.myapplication;
 
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.TextView;
-import java.util.Calendar;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
-import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity2 extends ActionBarActivity {
@@ -32,10 +22,6 @@ public class MainActivity2 extends ActionBarActivity {
         nameTask = (EditText) findViewById(R.id.nameTask);
         descTask = (EditText) findViewById(R.id.descTask);
         final Button okBtn = (Button) findViewById(R.id.button);
-
-
-
-
 
         nameTask.addTextChangedListener(new TextWatcher() {
             @Override
@@ -54,12 +40,7 @@ public class MainActivity2 extends ActionBarActivity {
 
             }
         });
-
-
-
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -83,7 +64,6 @@ public class MainActivity2 extends ActionBarActivity {
     }
     public void add_NewTask(View view){
         Toast.makeText(getApplicationContext(), "Se agrego la nueva tarea",Toast.LENGTH_SHORT).show();
-        Intent returnBtn =  new Intent(this,MainActivity.class);
-        startActivity(returnBtn);
+        finish();
     }
 }

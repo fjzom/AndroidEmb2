@@ -1,11 +1,10 @@
 package com.mycompany.myapplication;
 
-import android.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
 /**
  * Created by CarlosTadeo on 12/02/2015.
@@ -17,7 +16,6 @@ public class Welcome extends ActionBarActivity {
         setContentView(R.layout.activity_welcome);
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,5 +37,8 @@ public class Welcome extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void add_NewTask(View view) {
     }
 }

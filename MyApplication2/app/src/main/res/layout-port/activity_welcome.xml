@@ -13,27 +13,23 @@
         android:text="@string/title_AddTask"
         android:id="@+id/titleText"
         android:layout_gravity="center_horizontal"
-        android:editable="false"
         android:layout_marginTop="30dp"
         android:textStyle="bold"/>
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="379dp">
-    <GridLayout
+        android:layout_height="fill_parent">
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.24">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="244dp"
             android:layout_height="wrap_content"
             android:id="@+id/nameTask"
-            android:hint="@string/add_Title"
-            android:layout_marginTop="0dp"
-            android:layout_below="@+id/descTask"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:hint="@string/add_Title" />
 
         <EditText
             android:layout_width="244dp"
@@ -41,25 +37,12 @@
             android:inputType="textMultiLine"
             android:id="@+id/descTask"
             android:hint="@string/add_Desc"
-            android:layout_above="@+id/timeTask"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="50dp"
-            android:layout_row="1"
-            android:layout_column="0" />
+            android:layout_marginBottom="50dp" />
 
         <TimePicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/timePicker"
-            android:layout_row="2"
-            android:layout_column="0" />
-
-    </GridLayout>
-    </ScrollView>
-
-    <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+            android:id="@+id/timePicker" />
 
         <Button
             android:layout_width="124dp"
@@ -67,11 +50,12 @@
             android:text="@string/add_BtnOk"
             android:id="@+id/button"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="130dp"
             android:enabled="false"
             android:onClick="add_NewTask"
-            android:layout_gravity="right"/>
-    </GridLayout>
+            android:layout_gravity="end"/>
+    </LinearLayout>
+    </ScrollView>
+
 
 
 </LinearLayout>
