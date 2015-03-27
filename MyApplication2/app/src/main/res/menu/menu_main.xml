@@ -1,20 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="always" />
 
-    <item android:id="@+id/twitter"
-        android:title="@string/twitter"
+    <item
+        android:title="@string/nueva_tarea"
+        android:id="@+id/addTask"
         android:orderInCategory="1"
-        app:showAsAction="always" />
-
-    <item android:id="@+id/facebook"
-        android:title="@string/facebook"
-        android:orderInCategory="2"
-        app:showAsAction="always" />
-
-
-
+        android:icon="@drawable/ic_action_new"
+        app:showAsAction="always|withText"
+        android:onClick="AgregarTarea"/>
 </menu>
 

@@ -55,12 +55,8 @@ public class MainActivity2 extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
             return true;
-        }
 
-        return super.onOptionsItemSelected(item);
     }
     public void add_NewTask(View view){
         Toast.makeText(getApplicationContext(), "Se agrego la nueva tarea",Toast.LENGTH_SHORT).show();
