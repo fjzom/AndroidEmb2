@@ -16,8 +16,8 @@ public class Welcome extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        DbHelper helper = new DbHelper(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
+       // DbHelper helper = new DbHelper(this);
+        //SQLiteDatabase db = helper.getWritableDatabase();
 
     }
 

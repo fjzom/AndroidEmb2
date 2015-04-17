@@ -3,6 +3,9 @@ package com.mycompany.myapplication;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -58,6 +61,8 @@ public class MainActivity extends ActionBarActivity {
         Button btnCancelar;
         Button btnGuardar;
         final Dialog dialog = new Dialog(this);
+        DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
         //setting custom layout to dialog
         dialog.setContentView(R.layout.layout_pop_up);
         dialog.setTitle(R.string.nueva_tarea);
@@ -70,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
         final EditText tarea = (EditText) dialog.findViewById(R.id.editTarea);
         final EditText materia = (EditText)dialog.findViewById(R.id.editMateria);
         final EditText descripcion = (EditText)dialog.findViewById(R.id.editDescripcion);
+        final TextView karlatextview = (TextView) dialog.findViewById(R.id.karla_id);
 
         hora.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +114,7 @@ public class MainActivity extends ActionBarActivity {
                     }
 
                 };
-                DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.DAY_OF_MONTH),
-                        myCalendar.get(Calendar.MONTH));
+                DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.DAY_OF_MONTH),myCalendar.get(Calendar.MONTH));
                 dateDialog.setTitle(R.string.fecha_de_la_tarea);
                 dateDialog.show();
             }
@@ -129,12 +133,34 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //Faltan validaciones de campos vacios
+
                 nombreTarea = tarea.getText().toString();
                 nombreMateria = materia.getText().toString();
                 txtFecha = fecha.getText().toString();
                 txtHora = hora.getText().toString();
                 descripcionTarea = descripcion.getText().toString();
                 llamarBaseDeDatos = true;
+                ContentValues registro = new ContentValues();
+                registro.put("nombre", nombreTarea);
+                registro.put("descripcion", descripcionTarea);
+                registro.put("materia", nombreMateria);
+                registro.put("fecha", txtFecha);
+                registro.put("hora", txtHora);
+                //se crea registro capturado en BD
+                bd.insert("tarea", null, registro);
+                tarea.setText("");
+                materia.setText("");
+                fecha.setText("");
+                hora.setText("");
+                String contenido = "";
+                //se recorren todos los regitros de la tabla tarea y los guardo en contenido que es una cadena
+                Cursor fila = bd.rawQuery("select nombre, descripcion, materia, fecha, hora from tarea", null);
+                while (fila.moveToNext()) {
+                    //fila.getString(0);
+                    contenido = contenido + fila.getString(0) + "\n" + fila.getString(1) + "\n";
+                }
+                bd.close();
+
                 Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
                         Toast.LENGTH_LONG).show();
                 dialog.dismiss();

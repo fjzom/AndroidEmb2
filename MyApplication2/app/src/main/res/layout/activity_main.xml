@@ -12,7 +12,8 @@
             android:layout_height="fill_parent"
             android:text="@string/sin_tareas"
             android:textSize="30dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:id="@+id/karla_id" />
     </LinearLayout>
 
 </LinearLayout>
