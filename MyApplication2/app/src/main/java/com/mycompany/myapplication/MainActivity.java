@@ -132,44 +132,63 @@ public class MainActivity extends ActionBarActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Faltan validaciones de campos vacios
 
-                nombreTarea = tarea.getText().toString();
-                nombreMateria = materia.getText().toString();
-                txtFecha = fecha.getText().toString();
-                txtHora = hora.getText().toString();
-                descripcionTarea = descripcion.getText().toString();
-                llamarBaseDeDatos = true;
-                ContentValues registro = new ContentValues();
-                registro.put("nombre", nombreTarea);
-                registro.put("descripcion", descripcionTarea);
-                registro.put("materia", nombreMateria);
-                registro.put("fecha", txtFecha);
-                registro.put("hora", txtHora);
-                //se crea registro capturado en BD
-                bd.insert("tarea", null, registro);
-                tarea.setText("");
-                materia.setText("");
-                fecha.setText("");
-                hora.setText("");
-                String contenido = "";
-                //se recorren todos los regitros de la tabla tarea y los guardo en contenido que es una cadena
-                Cursor fila = bd.rawQuery("select nombre, descripcion, materia, fecha, hora from tarea", null);
-                while (fila.moveToNext()) {
-                    //fila.getString(0);
-                    contenido = contenido + fila.getString(0) + "\n" + fila.getString(1) + "\n";
-                }
-                bd.close();
-
-                Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
-                        Toast.LENGTH_LONG).show();
-                dialog.dismiss();
             }
         });
         if (llamarBaseDeDatos)
             llamarBaseDeDatos();
     }
 
+
+    public void BuscarTarea(MenuItem item){
+        llamarBaseDeDatos = false;
+        Button btnCancelar;
+        Button btnBuscar;
+
+        final Dialog dialog = new Dialog(this);
+        DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
+
+        //setting custom layout to dialog
+        dialog.setContentView(R.layout.layout_pop_search);
+        dialog.setTitle(R.string.buscar_tarea);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+
+       final EditText nameTask = (EditText)dialog.findViewById(R.id.nameTarea);
+
+        btnCancelar = (Button)dialog.findViewById(R.id.btnCancelar);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnBuscar = (Button)dialog.findViewById(R.id.btnSearch);
+        btnBuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               String nombreTarea = nameTask.getText().toString();
+                Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
+                if (c.moveToFirst()) {
+                    Toast.makeText(getApplicationContext(), "Materia: "+c.getString(0),
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Esta vacia",
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+
+
+            }
+        });
+
+
+        if (llamarBaseDeDatos)
+            llamarBaseDeDatos();
+    }
     private void llamarBaseDeDatos() {
 
     }

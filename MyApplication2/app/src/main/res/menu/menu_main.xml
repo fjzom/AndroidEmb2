@@ -9,5 +9,12 @@
         android:icon="@drawable/ic_action_new"
         app:showAsAction="always|withText"
         android:onClick="AgregarTarea"/>
+    <item
+        android:title="@string/buscar_tarea"
+        android:id="@+id/searchTask"
+        android:orderInCategory="2"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        app:showAsAction="always|withText"
+        android:onClick="BuscarTarea"/>
 </menu>
 
