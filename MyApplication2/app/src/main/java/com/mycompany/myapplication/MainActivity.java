@@ -132,6 +132,38 @@ public class MainActivity extends ActionBarActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Faltan validaciones de campos vacios
+
+                nombreTarea = tarea.getText().toString();
+                nombreMateria = materia.getText().toString();
+                txtFecha = fecha.getText().toString();
+                txtHora = hora.getText().toString();
+                descripcionTarea = descripcion.getText().toString();
+                llamarBaseDeDatos = true;
+                ContentValues registro = new ContentValues();
+                registro.put("nombre", nombreTarea);
+                registro.put("descripcion", descripcionTarea);
+                registro.put("materia", nombreMateria);
+                registro.put("fecha", txtFecha);
+                registro.put("hora", txtHora);
+                //se crea registro capturado en BD
+                bd.insert("tarea", null, registro);
+                tarea.setText("");
+                materia.setText("");
+                fecha.setText("");
+                hora.setText("");
+                String contenido = "";
+                //se recorren todos los regitros de la tabla tarea y los guardo en contenido que es una cadena
+                Cursor fila = bd.rawQuery("select nombre, descripcion, materia, fecha, hora from tarea", null);
+                while (fila.moveToNext()) {
+                    //fila.getString(0);
+                    contenido = contenido + fila.getString(0) + "\n" + fila.getString(1) + "\n";
+                }
+                bd.close();
+
+                Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
+                        Toast.LENGTH_LONG).show();
+                dialog.dismiss();
 
             }
         });
