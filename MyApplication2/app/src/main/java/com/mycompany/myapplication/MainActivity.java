@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -25,12 +28,21 @@ import java.util.Calendar;
 public class MainActivity extends ActionBarActivity {
     public String nombreTarea, nombreMateria, txtFecha, txtHora, descripcionTarea;
     public Boolean llamarBaseDeDatos;
+    public final static String EXTRA_MESSAGE = "com.mycompany.myapplication.MESSAGE";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        populateList();
+    }
+
+    private void populateList() {
+        String[] taskArray = new String[] { "Tarea 1","Tarea 2","Tarea 3","Tarea 4","Tarea 5","Tarea 6","Tarea 7"};
+        ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
+        ListView taskList = (ListView) findViewById(R.id.listView1);
+        taskList.setAdapter(taskArrayAdapter);
     }
 
 
@@ -75,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
         final EditText tarea = (EditText) dialog.findViewById(R.id.editTarea);
         final EditText materia = (EditText)dialog.findViewById(R.id.editMateria);
         final EditText descripcion = (EditText)dialog.findViewById(R.id.editDescripcion);
-        final TextView karlatextview = (TextView) dialog.findViewById(R.id.karla_id);
+
 
         hora.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +183,53 @@ public class MainActivity extends ActionBarActivity {
             llamarBaseDeDatos();
     }
 
+    public void DeleteAllTask(MenuItem item){
+        llamarBaseDeDatos = false;
+        Button btnCancelar;
+        Button btnAccept;
+        final Dialog dialog = new Dialog(this);
+        DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
 
+        //setting custom layout to dialog
+        dialog.setContentView(R.layout.layout_pop_deleteall);
+        dialog.setTitle(R.string.limpiarDB);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+        btnCancelar = (Button)dialog.findViewById(R.id.btnCancelarDel);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept = (Button)dialog.findViewById(R.id.btnYesDel);
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    bd.delete("tarea", null, null);
+                    Toast.makeText(getApplicationContext(), "La base de datos se vacio correctamente",
+                            Toast.LENGTH_LONG).show();
+                    bd.close();
+                    dialog.dismiss();
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Error ",
+                            Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+    }
     public void BuscarTarea(MenuItem item){
         llamarBaseDeDatos = false;
         Button btnCancelar;
@@ -204,8 +262,9 @@ public class MainActivity extends ActionBarActivity {
                String nombreTarea = nameTask.getText().toString();
                 Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
                 if (c.moveToFirst()) {
-                    Toast.makeText(getApplicationContext(), "Materia: "+c.getString(0),
-                            Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(v.getContext(), detailActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, nameTask.getText().toString());
+                    startActivity(intent);
                 }else{
                     Toast.makeText(getApplicationContext(), "Esta vacia",
                             Toast.LENGTH_LONG).show();

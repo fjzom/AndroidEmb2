@@ -14,7 +14,14 @@
         android:id="@+id/searchTask"
         android:orderInCategory="2"
         android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        app:showAsAction="always|withText"
+        app:showAsAction="ifRoom|withText"
         android:onClick="BuscarTarea"/>
+    <item
+        android:title="@string/eliminar_tareas"
+        android:id="@+id/deleteAllTask"
+        android:orderInCategory="3"
+        android:icon="@drawable/abc_ic_clear_mtrl_alpha"
+        app:showAsAction="ifRoom|withText"
+        android:onClick="DeleteAllTask"/>
 </menu>
 

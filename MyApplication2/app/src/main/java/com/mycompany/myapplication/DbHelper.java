@@ -21,6 +21,9 @@ public class DbHelper extends SQLiteOpenHelper {
       //  super(context, DB_NAME, null, DB_SCHEME_VERSION);
     //
     //}
+    public DbHelper(Context context) {
+    super(context,"agendadb",null,1);
+    }
     public DbHelper(Context context, String nombre, CursorFactory factory, int version) {
         super(context, nombre, factory, version);
     }

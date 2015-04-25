@@ -33,16 +33,7 @@
                 android:maxLength="40"
                 android:id="@+id/nameTarea"/>
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="36dp"
-                android:layout_marginTop="10dp"
-                android:hint="@string/nombre_de_la_Materia_hint"
-                android:background="@drawable/edit_text_round"
-                android:paddingLeft="5dp"
-                android:gravity="center_vertical"
-                android:maxLength="40"
-                android:id="@+id/editMateria"/>
+
 
 
 

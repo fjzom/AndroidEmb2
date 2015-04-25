@@ -19,9 +19,24 @@
         <activity
             android:name=".MainActivity2"
             android:label="@string/title_activity_main_activity2"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
-
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".detailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mycompany.myapplication.MainActivity" />
+        </activity>
+        <activity
+            android:name=".DetailSearchActiviry"
+            android:label="@string/title_activity_detail_search_activiry"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mycompany.myapplication.MainActivity" />
         </activity>
     </application>
 
