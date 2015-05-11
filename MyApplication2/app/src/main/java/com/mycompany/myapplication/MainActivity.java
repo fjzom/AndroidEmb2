@@ -22,7 +22,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -39,10 +41,19 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void populateList() {
-        String[] taskArray = new String[] { "Tarea 1","Tarea 2","Tarea 3","Tarea 4","Tarea 5","Tarea 6","Tarea 7"};
+        DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
+        List<String> taskList = new ArrayList<String>();
+       taskList = admin.tareaList();
+
+
+        String[] taskArray = new String[taskList.size()];
+        taskArray = taskList.toArray(taskArray);
+
+
         ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
-        ListView taskList = (ListView) findViewById(R.id.listView1);
-        taskList.setAdapter(taskArrayAdapter);
+        ListView taskListv = (ListView) findViewById(R.id.listView1);
+        taskListv.setAdapter(taskArrayAdapter);
     }
 
 
@@ -69,6 +80,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void AgregarTarea(MenuItem item) {
+
         llamarBaseDeDatos = false;
         Button btnCancelar;
         Button btnGuardar;
@@ -128,6 +140,7 @@ public class MainActivity extends ActionBarActivity {
                 };
                 DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.DAY_OF_MONTH),myCalendar.get(Calendar.MONTH));
                 dateDialog.setTitle(R.string.fecha_de_la_tarea);
+
                 dateDialog.show();
             }
         });
@@ -175,12 +188,14 @@ public class MainActivity extends ActionBarActivity {
 
                 Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
                         Toast.LENGTH_LONG).show();
+                populateList();
                 dialog.dismiss();
 
             }
         });
         if (llamarBaseDeDatos)
             llamarBaseDeDatos();
+
     }
 
     public void DeleteAllTask(MenuItem item){

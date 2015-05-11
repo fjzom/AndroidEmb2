@@ -74,5 +74,21 @@ public class DbHelper extends SQLiteOpenHelper {
         return tareaList;
 
     }
+    public List<String> tareaList(){
+        List<String> tareaLista = new ArrayList<>();
+        String selectQuery = "SELECT nombre FROM TAREA";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery,null);
+
+        if(cursor.moveToFirst()){
+            do {
+                String nombre = new String();
+                nombre = cursor.getString(0);
+                tareaLista.add(nombre);
+            } while (cursor.moveToNext());
+        }
+        return tareaLista;
+    }
 
 }
