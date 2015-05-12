@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -38,6 +39,16 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         populateList();
+        ListView taskListv = (ListView) findViewById(R.id.listView1);
+        taskListv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // When clicked, show a toast with the TextView text
+                Toast.makeText(getApplicationContext(),
+                        ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                BuscarTareaListener((String)((TextView) view).getText());
+            }
+        });
     }
 
     private void populateList() {
@@ -54,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
         ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
         taskListv.setAdapter(taskArrayAdapter);
+
     }
 
 
@@ -261,7 +273,7 @@ public class MainActivity extends ActionBarActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
 
-       final EditText nameTask = (EditText)dialog.findViewById(R.id.nameTarea);
+        final EditText nameTask = (EditText)dialog.findViewById(R.id.nameTarea);
 
         btnCancelar = (Button)dialog.findViewById(R.id.btnCancelar);
         btnCancelar.setOnClickListener(new View.OnClickListener() {
@@ -274,7 +286,7 @@ public class MainActivity extends ActionBarActivity {
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String nombreTarea = nameTask.getText().toString();
+                String nombreTarea = nameTask.getText().toString();
                 Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
                 if (c.moveToFirst()) {
                     Intent intent = new Intent(v.getContext(), detailActivity.class);
@@ -295,6 +307,31 @@ public class MainActivity extends ActionBarActivity {
         if (llamarBaseDeDatos)
             llamarBaseDeDatos();
     }
+    public void BuscarTareaListener(String nameTareaList){
+        llamarBaseDeDatos = false;
+               DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
+
+
+               String nombreTarea = nameTareaList;
+                Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
+                if (c.moveToFirst()) {
+                    Intent intent = new Intent(getBaseContext(),detailActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, nombreTarea);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Esta vacia",
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+
+
+            }
+
+
+
+
     private void llamarBaseDeDatos() {
 
     }
