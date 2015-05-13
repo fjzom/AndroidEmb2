@@ -33,4 +33,6 @@
     <string name="btn_Volver">Volver</string>
     <string name="title_activity_detail">detailActivity</string>
     <string name="title_activity_detail_search_activiry">DetailSearchActiviry</string>
+    <string name="error">Por favor llena los campos anteriores</string>
+    <string name="ok">OK</string>
 </resources>
