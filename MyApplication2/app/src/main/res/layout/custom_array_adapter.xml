@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
+    android:paddingTop="3dp">
+
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Tarea"
-                android:textColor="#4682B4"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_weight=".3"/>
-<!--            <Space
-                android:layout_width="20dp"
-                android:layout_height="1dp" />-->
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="#808080"
-                android:layout_weight=".7"
-                android:text="Hola"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="15dp"
-            android:weightSum="1">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Materia"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_weight=".30"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="#808080"
-                android:layout_weight=".7"
-                android:text="Hola"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/border">
 
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="80dp"
+            android:background="#33999999"
+            android:tint="#3366CC"
+            android:src="@drawable/ic_times_and_dates"/>
+        <View
+            android:layout_width="5px"
+            android:layout_height="fill_parent"
+            android:background="#FFFFFF">
+        </View>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/time"
+                android:textSize="40dp"
+                android:background="#607d8b"
+                android:textColor="#2196f3"
+                android:text="Hola"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/task"
+                android:textSize="20dp"
+                android:textColor="#009688"
+                android:background="#607d8b"
+                android:text="K Ase"/>
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

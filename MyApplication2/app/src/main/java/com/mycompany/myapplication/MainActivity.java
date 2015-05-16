@@ -35,6 +35,16 @@ public class MainActivity extends ActionBarActivity {
     public Boolean llamarBaseDeDatos;
     public final static String EXTRA_MESSAGE = "com.mycompany.myapplication.MESSAGE";
 
+    private enum camposDataBase{Nombre("nombre"), Descripcion("descripcion"), Materia("materia"), Fecha("fecha"), Hora("hora");
+        private String nombreCampo;
+        private camposDataBase(String nombreCampo) {
+            this.nombreCampo = nombreCampo;
+        }
+
+        @Override
+        public String toString(){
+            return nombreCampo;
+        } };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +66,28 @@ public class MainActivity extends ActionBarActivity {
     private void populateList() {
         DbHelper admin = new DbHelper(this,"agendadb", null, 1);
         final SQLiteDatabase bd = admin.getWritableDatabase();
-        List<String> taskList = new ArrayList<String>();
-       taskList = admin.tareaList();
+        List<String> taskList;
+        List<String> dateList;
+        List<String> timeList;
+        List<String> assigList;
+        List<String> descList;
+        dateList = admin.getFieldFromTable(camposDataBase.Fecha.toString());
+        timeList = admin.getFieldFromTable(camposDataBase.Hora.toString());
+        assigList = admin.getFieldFromTable(camposDataBase.Materia.toString());
+        descList = admin.getFieldFromTable(camposDataBase.Descripcion.toString());
+        taskList = admin.getFieldFromTable(camposDataBase.Nombre.toString());
+       //taskList = admin.tareaList();
 
-
+        String[] dateArray = new String[dateList.size()];
+        dateArray = dateList.toArray(dateArray);
         String[] taskArray = new String[taskList.size()];
         taskArray = taskList.toArray(taskArray);
 
-
-        ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
+        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray);
+        //ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
-        taskListv.setAdapter(taskArrayAdapter);
+//        taskListv.setAdapter(taskArrayAdapter);
+        taskListv.setAdapter(taskAdapter);
 
     }
 
@@ -232,9 +253,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void DeleteAllTask(MenuItem item){
         llamarBaseDeDatos = false;
-        Button btnCancelar;
-        Button btnAccept;
-        final Dialog dialog = new Dialog(this);
+
         DbHelper admin = new DbHelper(this,"agendadb", null, 1);
         final SQLiteDatabase bd = admin.getWritableDatabase();
 
