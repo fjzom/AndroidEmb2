@@ -15,14 +15,15 @@ import java.util.List;
  */
 public class CustomArrayAdapter extends ArrayAdapter<String> {
 
-    String[] taskArray, dateArray;
-    public CustomArrayAdapter(Context context, int textViewResourceId, String[] taskArray, String[] dateArray) {
+    String[] taskArray, dateArray,timeArray;
+    public CustomArrayAdapter(Context context, int textViewResourceId, String[] taskArray, String[] dateArray, String[] timeArray) {
         super(context, textViewResourceId);
         this.dateArray = dateArray;
         this.taskArray = taskArray;
+        this.timeArray = timeArray;
     }
 
-    public CustomArrayAdapter(Context context, int resource, String[] items) {
+    public CustomArrayAdapter(Context context, int resource, String[] taskArray, String[] items) {
         super(context, resource, items);
     }
 
@@ -39,10 +40,12 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
 
         //String p = getItem(position);
 //
-        TextView timeToShow = (TextView)v.findViewById(R.id.time);
+        TextView dateToShow = (TextView)v.findViewById(R.id.date);
         TextView taskToShow = (TextView)v.findViewById(R.id.task);
-        timeToShow.setText(dateArray[position]);
+        TextView timeToShow = (TextView)v.findViewById(R.id.time);
+        dateToShow.setText(dateArray[position]);
         taskToShow.setText(taskArray[position]);
+        timeToShow.setText(timeArray[position]);
 //        if (p != null) {
 //            TextView tt1 = (TextView) v.findViewById(R.id.id);
 //            TextView tt2 = (TextView) v.findViewById(R.id.categoryId);

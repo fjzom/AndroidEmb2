@@ -82,8 +82,10 @@ public class MainActivity extends ActionBarActivity {
         dateArray = dateList.toArray(dateArray);
         String[] taskArray = new String[taskList.size()];
         taskArray = taskList.toArray(taskArray);
+        String[] timeArray = new String[timeList.size()];
+        timeArray = timeList.toArray(timeArray);
 
-        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray);
+        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray,timeArray);
         //ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
 //        taskListv.setAdapter(taskArrayAdapter);
