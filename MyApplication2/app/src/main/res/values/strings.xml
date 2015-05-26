@@ -6,7 +6,12 @@
     <string name="action_settings">Settings</string>
     <string name="nueva_tarea">Nueva Tarea</string>
     <string name="eliminar_tareas">Limpiar Tareas</string>
-    <string name="confirmDel">¿Esta seguro de eliminar todos los registros de la base de datos?</string>
+    <string name="confirmDel">¿Seguro que desea borrar todas las tareas?</string>
+    <string name="confirmDelReg">¿Seguro que desea borrar la tarea?</string>
+    <string name="confirmUpdateReg">¿Seguro que desea modficar la tarea?</string>
+
+
+
     <string name="btn_Yes">Si</string>
     <string name="buscar_tarea">Buscar Tarea</string>
     <string name="limpiarDB">Eliminacion de Registros</string>
@@ -20,8 +25,10 @@
     <string name="nombre_de_la_tarea_hint">Tarea</string>
     <string name="descripcion_de_la_tarea">Descripcion de la Tarea</string>
     <string name="descripcion_de_la_tarea_hint">Descripcion</string>
+    <string name="nombre_de_la_Materia">Materia</string>
     <string name="nombre_de_la_Materia_hint">Materia</string>
     <string name="btn_Cancelar">Cancelar</string>
+    <string name="btn_No">No</string>
     <string name="btn_Guardar">Guardar</string>
     <string name="txtFecha">Fecha</string>
     <string name="txtHora">Hora</string>
@@ -33,4 +40,6 @@
     <string name="btn_Volver">Volver</string>
     <string name="title_activity_detail">detailActivity</string>
     <string name="title_activity_detail_search_activiry">DetailSearchActiviry</string>
+    <string name="error">Por favor llena los campos anteriores</string>
+    <string name="ok">OK</string>
 </resources>
