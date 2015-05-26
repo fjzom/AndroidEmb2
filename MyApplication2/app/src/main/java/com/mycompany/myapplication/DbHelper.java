@@ -83,7 +83,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()){
             do {
-                String nombre = new String();
+                String nombre;
                 nombre = cursor.getString(0);
                 tareaLista.add(nombre);
             } while (cursor.moveToNext());
@@ -91,4 +91,20 @@ public class DbHelper extends SQLiteOpenHelper {
         return tareaLista;
     }
 
+    public List<String> getFieldFromTable(String fieldToSelect){
+        List<String> fieldList = new ArrayList<>();
+        String selectQuery = "SELECT " +fieldToSelect+" FROM TAREA";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery,null);
+
+        if(cursor.moveToFirst()){
+            do {
+                String field;
+                field = cursor.getString(0);
+                fieldList.add(field);
+            } while (cursor.moveToNext());
+        }
+        return fieldList;
+    }
 }

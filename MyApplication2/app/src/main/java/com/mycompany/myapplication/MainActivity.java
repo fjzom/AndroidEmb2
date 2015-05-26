@@ -1,9 +1,11 @@
 package com.mycompany.myapplication;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,6 +35,16 @@ public class MainActivity extends ActionBarActivity {
     public Boolean llamarBaseDeDatos;
     public final static String EXTRA_MESSAGE = "com.mycompany.myapplication.MESSAGE";
 
+    private enum camposDataBase{Nombre("nombre"), Descripcion("descripcion"), Materia("materia"), Fecha("fecha"), Hora("hora");
+        private String nombreCampo;
+        private camposDataBase(String nombreCampo) {
+            this.nombreCampo = nombreCampo;
+        }
+
+        @Override
+        public String toString(){
+            return nombreCampo;
+        } };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
                 // When clicked, show a toast with the TextView text
                 Toast.makeText(getApplicationContext(),
                         ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
-                BuscarTareaListener((String)((TextView) view).getText());
+                BuscarTareaListener((String) ((TextView) view).getText());
             }
         });
     }
@@ -54,17 +66,30 @@ public class MainActivity extends ActionBarActivity {
     private void populateList() {
         DbHelper admin = new DbHelper(this,"agendadb", null, 1);
         final SQLiteDatabase bd = admin.getWritableDatabase();
-        List<String> taskList = new ArrayList<String>();
-       taskList = admin.tareaList();
+        List<String> taskList;
+        List<String> dateList;
+        List<String> timeList;
+        List<String> assigList;
+        List<String> descList;
+        dateList = admin.getFieldFromTable(camposDataBase.Fecha.toString());
+        timeList = admin.getFieldFromTable(camposDataBase.Hora.toString());
+        assigList = admin.getFieldFromTable(camposDataBase.Materia.toString());
+        descList = admin.getFieldFromTable(camposDataBase.Descripcion.toString());
+        taskList = admin.getFieldFromTable(camposDataBase.Nombre.toString());
+       //taskList = admin.tareaList();
 
-
+        String[] dateArray = new String[dateList.size()];
+        dateArray = dateList.toArray(dateArray);
         String[] taskArray = new String[taskList.size()];
         taskArray = taskList.toArray(taskArray);
+        String[] timeArray = new String[timeList.size()];
+        timeArray = timeList.toArray(timeArray);
 
-
-        ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
+        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray,timeArray);
+        //ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
-        taskListv.setAdapter(taskArrayAdapter);
+//        taskListv.setAdapter(taskArrayAdapter);
+        taskListv.setAdapter(taskAdapter);
 
     }
 
@@ -170,37 +195,55 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //Faltan validaciones de campos vacios
-
+                String error = "";
+                //while()
                 nombreTarea = tarea.getText().toString();
                 nombreMateria = materia.getText().toString();
                 txtFecha = fecha.getText().toString();
                 txtHora = hora.getText().toString();
                 descripcionTarea = descripcion.getText().toString();
-                llamarBaseDeDatos = true;
-                ContentValues registro = new ContentValues();
-                registro.put("nombre", nombreTarea);
-                registro.put("descripcion", descripcionTarea);
-                registro.put("materia", nombreMateria);
-                registro.put("fecha", txtFecha);
-                registro.put("hora", txtHora);
-                //se crea registro capturado en BD
-                bd.insert("tarea", null, registro);
-                tarea.setText("");
-                materia.setText("");
-                fecha.setText("");
-                hora.setText("");
-                String contenido = "";
-                //se recorren todos los regitros de la tabla tarea y los guardo en contenido que es una cadena
-                Cursor fila = bd.rawQuery("select nombre, descripcion, materia, fecha, hora from tarea", null);
-                while (fila.moveToNext()) {
-                    //fila.getString(0);
-                    contenido = contenido + fila.getString(0) + "\n" + fila.getString(1) + "\n";
-                }
-                bd.close();
+                if(nombreTarea.trim().isEmpty() || nombreMateria.trim().isEmpty() || txtFecha.trim().isEmpty()
+                        || txtHora.trim().isEmpty() || descripcionTarea.trim().isEmpty())
+                    error = getString(R.string.error);
+                if(error.isEmpty()) {
+                    llamarBaseDeDatos = true;
+                    ContentValues registro = new ContentValues();
+                    registro.put("nombre", nombreTarea);
+                    registro.put("descripcion", descripcionTarea);
+                    registro.put("materia", nombreMateria);
+                    registro.put("fecha", txtFecha);
+                    registro.put("hora", txtHora);
+                    //se crea registro capturado en BD
+                    bd.insert("tarea", null, registro);
+                    tarea.setText("");
+                    materia.setText("");
+                    fecha.setText("");
+                    hora.setText("");
+                    String contenido = "";
+                    //se recorren todos los regitros de la tabla tarea y los guardo en contenido que es una cadena
+                    Cursor fila = bd.rawQuery("select nombre, descripcion, materia, fecha, hora from tarea", null);
+                    while (fila.moveToNext()) {
+                        //fila.getString(0);
+                        contenido = contenido + fila.getString(0) + "\n" + fila.getString(1) + "\n";
+                    }
+                    bd.close();
 
-                Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
-                        Toast.LENGTH_LONG).show();
-                populateList();
+                    Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
+                            Toast.LENGTH_LONG).show();
+                    populateList();
+                }else {
+
+                    AlertDialog.Builder errorMessage = new AlertDialog.Builder(dialog.getContext());
+                    errorMessage.setMessage(error);
+                    errorMessage.setNeutralButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dia, int which) {
+                            dialog.show();
+                            dia.dismiss();
+                        }
+                    });
+                    errorMessage.show();
+                }
                 dialog.dismiss();
 
             }
@@ -212,13 +255,37 @@ public class MainActivity extends ActionBarActivity {
 
     public void DeleteAllTask(MenuItem item){
         llamarBaseDeDatos = false;
-        Button btnCancelar;
-        Button btnAccept;
-        final Dialog dialog = new Dialog(this);
+
         DbHelper admin = new DbHelper(this,"agendadb", null, 1);
         final SQLiteDatabase bd = admin.getWritableDatabase();
 
-        //setting custom layout to dialog
+        AlertDialog.Builder deleteMessage = new AlertDialog.Builder(this);
+        deleteMessage.setMessage(R.string.confirmDel);
+        deleteMessage.setPositiveButton(R.string.btn_Yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                try {
+                    bd.delete("tarea", null, null);
+                    Toast.makeText(getApplicationContext(), "La base de datos se vacio correctamente",
+                            Toast.LENGTH_LONG).show();
+                    bd.close();
+                    dialog.dismiss();
+                    populateList();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error ",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        deleteMessage.setNegativeButton(R.string.btn_Cancelar, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        deleteMessage.show();
+/*        //setting custom layout to dialog
         dialog.setContentView(R.layout.layout_pop_deleteall);
         dialog.setTitle(R.string.limpiarDB);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
@@ -242,20 +309,14 @@ public class MainActivity extends ActionBarActivity {
                             Toast.LENGTH_LONG).show();
                     bd.close();
                     dialog.dismiss();
+                    populateList();
                 }catch (Exception e){
                     Toast.makeText(getApplicationContext(), "Error ",
                             Toast.LENGTH_LONG).show();
                 }
 
             }
-        });
-
-
-
-
-
-
-
+        });*/
     }
     public void BuscarTarea(MenuItem item){
         llamarBaseDeDatos = false;
