@@ -20,7 +20,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight=".45"
-                    android:text="No"
+                    android:text="@string/btn_Cancelar"
                     android:id="@+id/btnCancelarDel"/>
                 <Space
                     android:layout_width="0dp"

@@ -14,17 +14,13 @@ import java.util.List;
  */
 public class DbHelper extends SQLiteOpenHelper {
 
-    // Table Name
-    public static final String TABLE_NAME = "TAREA";
+    //private static final String  DB_NAME = "agendadb";
+    //private static final int DB_SCHEME_VERSION = 1;
 
-    // Table columns
-    public static final String _ID = "TAREA_ID";
-    public static final String TODO_SUBJECT = "subject";
-    public static final String TODO_DESC = "description";
-
-    // Database Information
-    static final String DB_NAME = "AGENDADB.DB";
-
+    //public DbHelper(Context context) {
+      //  super(context, DB_NAME, null, DB_SCHEME_VERSION);
+    //
+    //}
     public DbHelper(Context context) {
     super(context,"agendadb",null,1);
     }
@@ -87,7 +83,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if(cursor.moveToFirst()){
             do {
-                String nombre;
+                String nombre = new String();
                 nombre = cursor.getString(0);
                 tareaLista.add(nombre);
             } while (cursor.moveToNext());
@@ -95,20 +91,4 @@ public class DbHelper extends SQLiteOpenHelper {
         return tareaLista;
     }
 
-    public List<String> getFieldFromTable(String fieldToSelect){
-        List<String> fieldList = new ArrayList<>();
-        String selectQuery = "SELECT " +fieldToSelect+" FROM TAREA";
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery,null);
-
-        if(cursor.moveToFirst()){
-            do {
-                String field;
-                field = cursor.getString(0);
-                fieldList.add(field);
-            } while (cursor.moveToNext());
-        }
-        return fieldList;
-    }
 }
