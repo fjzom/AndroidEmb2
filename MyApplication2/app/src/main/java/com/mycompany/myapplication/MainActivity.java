@@ -49,18 +49,23 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         populateList();
         ListView taskListv = (ListView) findViewById(R.id.listView1);
+        // React to user clicks on item
+        taskListv.setClickable(true);
         taskListv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Toast.makeText(getApplicationContext(),
-                        ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
-                BuscarTareaListener((String) ((TextView) view).getText());
+
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                    long id) {
+                Toast.makeText(getApplicationContext(),"La posicion de este item es: "+ position,
+                        Toast.LENGTH_LONG).show();
+
+
             }
         });
+
     }
 
     private void populateList() {
