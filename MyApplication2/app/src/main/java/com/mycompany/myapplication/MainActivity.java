@@ -1,10 +1,14 @@
 package com.mycompany.myapplication;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,8 +29,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -95,7 +103,77 @@ public class MainActivity extends ActionBarActivity {
         ListView taskListv = (ListView) findViewById(R.id.listView1);
 //        taskListv.setAdapter(taskArrayAdapter);
         taskListv.setAdapter(taskAdapter);
+        setAlarm(dateArray,timeArray);
+        //setAlarms(dateList,timeList,taskList);
 
+    }
+
+    private void setAlarm(String[] dateArray, String[] timeArray) {
+        Calendar calendar = Calendar.getInstance();
+        String fechaConPuntos;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date dateFormat = null;
+        if (dateArray.length > 0)
+            for (int i = 0; i < dateArray.length; i++){
+                fechaConPuntos = dateArray[i].replace("/",".")+" "+timeArray[i];
+                try {
+                    dateFormat = sdf.parse(fechaConPuntos);
+                    if(calendar.getTimeInMillis()<dateFormat.getTime()) {
+
+
+                        Intent intentAlarm = new Intent(this, AlarmBrod.class);
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                        //set the alarm for particular time
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, dateFormat.getTime(), PendingIntent.getBroadcast(this, 1 + i, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+                        Toast.makeText(this, "Alarma Programada para "+dateFormat.toString(), Toast.LENGTH_LONG).show();
+                        // create the object
+//                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//                    PendingIntent pendingIntent = PendingIntent.getActivity(this,
+//                            12345, intentAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
+//                    //Toast.makeText(this, "Alarm Scheduled for "+dateFormat.getTime(), Toast.LENGTH_LONG).show();
+//                    AlarmManager am =
+//                            (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
+//                    am.set(AlarmManager.RTC_WAKEUP, dateFormat.getTime()+1000,
+//                            pendingIntent);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    private void setAlarms(List<String> dateList, List<String> timeList, List<String> taskList) {
+        Long time = new GregorianCalendar().getTimeInMillis()+24*60*60*1000;
+
+
+        String someDate = "05.10.2011";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date dateFormat = null;
+/*
+        try {
+            dates = sdf.parse(someDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+*/
+//        System.out.println(dates.getTime());
+
+
+        int day,month,year;
+        String splitDate;
+        if (!dateList.isEmpty())
+            for (String date : dateList){
+                splitDate = date.replace("/", ".");
+//                day = Integer.valueOf(splitDate[0]);
+//                month = Integer.valueOf(splitDate[1]);
+//                year = Integer.valueOf(splitDate[2]);
+                try {
+                    dateFormat = sdf.parse(splitDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
     }
 
 
@@ -132,6 +210,7 @@ public class MainActivity extends ActionBarActivity {
         //setting custom layout to dialog
         dialog.setContentView(R.layout.layout_pop_up);
         dialog.setTitle(R.string.nueva_tarea);
+        dialog.setCancelable(false);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
@@ -153,7 +232,7 @@ public class MainActivity extends ActionBarActivity {
                 mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        hora.setText(selectedHour + ":" + selectedMinute);
+                        hora.setText(selectedHour + ":" + (selectedMinute <= 9? "0"+selectedMinute:selectedMinute));
                     }
                 }, hour, minute, false);//Yes 24 hour time
                 mTimePicker.setTitle(R.string.hora_de_alarma);
@@ -166,7 +245,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 final Calendar myCalendar = Calendar.getInstance();
 
-                DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -180,8 +259,10 @@ public class MainActivity extends ActionBarActivity {
                     }
 
                 };
-                DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.DAY_OF_MONTH),myCalendar.get(Calendar.MONTH));
+                DatePickerDialog dateDialog = new DatePickerDialog(MainActivity.this, date, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                 dateDialog.setTitle(R.string.fecha_de_la_tarea);
+                dateDialog.getDatePicker().setCalendarViewShown(false);
+                dateDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
                 dateDialog.show();
             }
@@ -199,9 +280,7 @@ public class MainActivity extends ActionBarActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Faltan validaciones de campos vacios
                 String error = "";
-                //while()
                 nombreTarea = tarea.getText().toString();
                 nombreMateria = materia.getText().toString();
                 txtFecha = fecha.getText().toString();
@@ -210,6 +289,7 @@ public class MainActivity extends ActionBarActivity {
                 if(nombreTarea.trim().isEmpty() || nombreMateria.trim().isEmpty() || txtFecha.trim().isEmpty()
                         || txtHora.trim().isEmpty() || descripcionTarea.trim().isEmpty())
                     error = getString(R.string.error);
+                //if () Validar fecha anterior
                 if(error.isEmpty()) {
                     llamarBaseDeDatos = true;
                     ContentValues registro = new ContentValues();
@@ -290,38 +370,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         deleteMessage.show();
-/*        //setting custom layout to dialog
-        dialog.setContentView(R.layout.layout_pop_deleteall);
-        dialog.setTitle(R.string.limpiarDB);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog.show();
-        btnCancelar = (Button)dialog.findViewById(R.id.btnCancelarDel);
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btnAccept = (Button)dialog.findViewById(R.id.btnYesDel);
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                try {
-                    bd.delete("tarea", null, null);
-                    Toast.makeText(getApplicationContext(), "La base de datos se vacio correctamente",
-                            Toast.LENGTH_LONG).show();
-                    bd.close();
-                    dialog.dismiss();
-                    populateList();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Error ",
-                            Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });*/
     }
     public void BuscarTarea(MenuItem item){
         llamarBaseDeDatos = false;

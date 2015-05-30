@@ -39,4 +39,7 @@
     <string name="title_activity_detail_search_activiry">DetailSearchActiviry</string>
     <string name="error">Por favor llena los campos anteriores</string>
     <string name="ok">OK</string>
+    <string name="title_activity_alarm_receiver">AlarmReceiver</string>
+    <string name="inicio_alarma">Se inicia la Alarma</string>
+    <string name="detener">Detener Alarma</string>
 </resources>
