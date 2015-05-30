@@ -33,7 +33,7 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
     public String nombreTarea, nombreMateria, txtFecha, txtHora, descripcionTarea;
     public Boolean llamarBaseDeDatos;
-    public int query = 1;
+    public int query = 0;
     public final static String EXTRA_MESSAGE = "com.mycompany.myapplication.MESSAGE";
     public String posString = "";
     private enum camposDataBase{TID ("tarea_id"),Nombre("nombre"), Descripcion("descripcion"), Materia("materia"), Fecha("fecha"), Hora("hora");
@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
         String today = day+"/"+month+"/"+year;
         Toast.makeText(getApplicationContext(),"Tareas para hoy: "+today,
                 Toast.LENGTH_LONG).show();
-        query = 0;
+        query = 1;
         populateList(query);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
         // React to user clicks on item

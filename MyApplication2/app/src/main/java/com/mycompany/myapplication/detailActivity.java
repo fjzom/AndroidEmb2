@@ -17,6 +17,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class detailActivity extends Activity implements OnClickListener {
 
@@ -66,8 +73,7 @@ public class detailActivity extends Activity implements OnClickListener {
             String horaTaskSearch = c.getString(4);
             String dateTaskSearch = c.getString(5);
 
-            Toast.makeText(getApplicationContext(), tareaIdTaskSearch,
-                    Toast.LENGTH_LONG).show();
+
             searchTarea.setText(nombreTaskSearch);
             searchMateria.setText(materiaTaskSearch);
             searchDate.setText(dateTaskSearch);
@@ -111,7 +117,26 @@ public class detailActivity extends Activity implements OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+public void addRecod(View view){
+    Calendar cal = Calendar.getInstance();
+    String nombreTarea = searchTarea.getText().toString();
+    String descTarea = searchDescripcion.getText().toString();
 
+    Intent intent = new Intent(Intent.ACTION_EDIT);
+    intent.setType("vnd.android.cursor.item/event");
+    intent.putExtra("beginTime", cal.getTimeInMillis());
+    intent.putExtra("allDay", true);
+    intent.putExtra("rrule", "FREQ=DAILY");
+    intent.putExtra("endTime", cal.getTimeInMillis()+60*60*1000);
+    intent.putExtra("title", nombreTarea);
+    intent.putExtra("description",descTarea);
+    Intent inten = new Intent();
+    inten.setClass(detailActivity.this,MainActivity.class);
+    startActivity(inten);
+
+    startActivity(intent);
+    finish();
+}
 
     @Override
     public void onClick(View v) {
@@ -166,11 +191,11 @@ public class detailActivity extends Activity implements OnClickListener {
                             String upsearchDate = searchDate.getText().toString();
                             String upsearchDescripcion = searchDescripcion.getText().toString();
 
-                            cvUpdates.put("nombre",upsearchTarea);
-                            cvUpdates.put("materia",upsearchMateria);
-                            cvUpdates.put("hora",upsearchTime);
-                            cvUpdates.put("fecha",upsearchDate);
-                            cvUpdates.put("descripcion",upsearchDescripcion);
+                            cvUpdates.put("nombre", upsearchTarea);
+                            cvUpdates.put("materia", upsearchMateria);
+                            cvUpdates.put("hora", upsearchTime);
+                            cvUpdates.put("fecha", upsearchDate);
+                            cvUpdates.put("descripcion", upsearchDescripcion);
                             bd.update("tarea", cvUpdates, "tarea_id" + "=" + _id, null);
                             Toast.makeText(getApplicationContext(), "Tarea actualziada",
                                     Toast.LENGTH_LONG).show();
@@ -194,6 +219,7 @@ public class detailActivity extends Activity implements OnClickListener {
 
 
                 break;
+
             default:
                 break;
         }

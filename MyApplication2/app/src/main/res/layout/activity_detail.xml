@@ -101,6 +101,16 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:text="Modificar" />
+            <Button
+                android:id="@+id/record_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:text="Recordar"
+                android:onClick="addRecod"/>
         </LinearLayout>
         </LinearLayout>
 

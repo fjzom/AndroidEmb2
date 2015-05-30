@@ -135,20 +135,6 @@ public class DbHelper extends SQLiteOpenHelper {
                         field = cursor2.getString(0);
                         fieldList.add(field);
                     } while (cursor2.moveToNext());
-                }else{
-                    String selectQuery3 = "SELECT " + fieldToSelect + " FROM TAREA";
-
-
-                    Cursor cursor3 = db.rawQuery(selectQuery3, null);
-
-                    if (cursor3.moveToFirst()) {
-                        do {
-                            String field;
-                            field = cursor3.getString(0);
-                            fieldList.add(field);
-                        } while (cursor3.moveToNext());
-                    }
-
                 }
                 break;
         }
