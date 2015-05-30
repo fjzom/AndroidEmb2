@@ -12,14 +12,21 @@
     <item
         android:title="@string/buscar_tarea"
         android:id="@+id/searchTask"
-        android:orderInCategory="2"
-        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:orderInCategory="3"
+        android:icon="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
         app:showAsAction="ifRoom|withText"
-        android:onClick="BuscarTarea"/>
+        android:onClick="setQuery"/>
+    <item
+        android:title="Tareas de Hoy"
+        android:id="@+id/todayTask"
+        android:orderInCategory="2"
+        android:icon="@drawable/abc_ic_menu_paste_mtrl_am_alpha"
+        app:showAsAction="ifRoom|withText"
+        android:onClick="setQueryH"/>
     <item
         android:title="@string/eliminar_tareas"
         android:id="@+id/deleteAllTask"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:icon="@drawable/abc_ic_clear_mtrl_alpha"
         app:showAsAction="ifRoom|withText"
         android:onClick="DeleteAllTask"/>

@@ -14,6 +14,7 @@ import android.widget.Toast;
  */
 public class taskDetail extends Activity{
     public String nombre;
+    public String taskID;
     public TextView nomTask,mat,dateTask,timeTask,descTask;
 
     /** Called when the activity is first created. */
@@ -31,15 +32,16 @@ public class taskDetail extends Activity{
 
         Bundle bundle = getIntent().getExtras();
         nombre = bundle.getString("nombre");
+        taskID = bundle.getString("tarea_id");
 
 
         DbHelper dbh = new DbHelper(this);
         SQLiteDatabase db = dbh.getWritableDatabase();
 
         String[] campos = new String[]{"tarea_id", "nombre", "descripcion", "materia", "hora", "fecha"};
-        String[] args = new String[]{nombre};
+        String[] args = new String[]{nombre, taskID};
 
-        Cursor c = db.query("TAREA", campos, "nombre=?", args, null, null, null);
+        Cursor c = db.query("TAREA", campos, "nombre=? AND tarea_id=?", args, null, null, null);
 
 
         if (c.moveToFirst()) {

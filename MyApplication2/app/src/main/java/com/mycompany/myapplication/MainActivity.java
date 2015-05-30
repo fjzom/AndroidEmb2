@@ -33,9 +33,10 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity {
     public String nombreTarea, nombreMateria, txtFecha, txtHora, descripcionTarea;
     public Boolean llamarBaseDeDatos;
+    public int query = 1;
     public final static String EXTRA_MESSAGE = "com.mycompany.myapplication.MESSAGE";
-
-    private enum camposDataBase{Nombre("nombre"), Descripcion("descripcion"), Materia("materia"), Fecha("fecha"), Hora("hora");
+    public String posString = "";
+    private enum camposDataBase{TID ("tarea_id"),Nombre("nombre"), Descripcion("descripcion"), Materia("materia"), Fecha("fecha"), Hora("hora");
         private String nombreCampo;
         private camposDataBase(String nombreCampo) {
             this.nombreCampo = nombreCampo;
@@ -51,7 +52,15 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        populateList();
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int month = c.get(Calendar.MONTH);
+        int year = c.get(Calendar.YEAR);
+        String today = day+"/"+month+"/"+year;
+        Toast.makeText(getApplicationContext(),"Tareas para hoy: "+today,
+                Toast.LENGTH_LONG).show();
+        query = 0;
+        populateList(query);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
         // React to user clicks on item
         taskListv.setClickable(true);
@@ -59,28 +68,61 @@ public class MainActivity extends ActionBarActivity {
 
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                     long id) {
-                Toast.makeText(getApplicationContext(),"La posicion de este item es: "+ position,
-                        Toast.LENGTH_LONG).show();
+                String contactId = ((TextView) view.findViewById(R.id.idItemTask)).getText().toString();
+
+               ShowTareaFromList(position,contactId);
 
 
             }
         });
 
     }
+    public void ShowTareaFromList(int pos,String id){
 
-    private void populateList() {
+        DbHelper admin = new DbHelper(this,"agendadb", null, 1);
+        final SQLiteDatabase bd = admin.getWritableDatabase();
+
+                String idTarea =id;
+                Cursor c = bd.rawQuery("SELECT * FROM TAREA where tarea_id=?" ,new String [] {idTarea});
+                if (c.moveToFirst()) {
+                    Intent intent = new Intent(this.getBaseContext(), detailActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, idTarea);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Esta vacia",
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+
+
+
+
+    }
+    public void setQueryH(MenuItem item){
+      query =1;
+        populateList(query);
+    }
+    public void setQuery(MenuItem item){
+     query=0;
+        populateList(query);
+    }
+    private void populateList(int tquery) {
+              int typeQuery = tquery;
         DbHelper admin = new DbHelper(this,"agendadb", null, 1);
         final SQLiteDatabase bd = admin.getWritableDatabase();
         List<String> taskList;
+        List<String> taskIDList;
         List<String> dateList;
         List<String> timeList;
         List<String> assigList;
         List<String> descList;
-        dateList = admin.getFieldFromTable(camposDataBase.Fecha.toString());
-        timeList = admin.getFieldFromTable(camposDataBase.Hora.toString());
-        assigList = admin.getFieldFromTable(camposDataBase.Materia.toString());
-        descList = admin.getFieldFromTable(camposDataBase.Descripcion.toString());
-        taskList = admin.getFieldFromTable(camposDataBase.Nombre.toString());
+        dateList = admin.getFieldFromTable(camposDataBase.Fecha.toString(),typeQuery);
+        timeList = admin.getFieldFromTable(camposDataBase.Hora.toString(),typeQuery);
+        assigList = admin.getFieldFromTable(camposDataBase.Materia.toString(),typeQuery);
+        descList = admin.getFieldFromTable(camposDataBase.Descripcion.toString(),typeQuery);
+        taskList = admin.getFieldFromTable(camposDataBase.Nombre.toString(),typeQuery);
+        taskIDList= admin.getFieldFromTable(camposDataBase.TID.toString(),typeQuery);
        //taskList = admin.tareaList();
 
         String[] dateArray = new String[dateList.size()];
@@ -89,8 +131,10 @@ public class MainActivity extends ActionBarActivity {
         taskArray = taskList.toArray(taskArray);
         String[] timeArray = new String[timeList.size()];
         timeArray = timeList.toArray(timeArray);
+        String[] idArray = new String[taskIDList.size()];
+        idArray = taskIDList.toArray(idArray);
 
-        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray,timeArray);
+        CustomArrayAdapter taskAdapter = new CustomArrayAdapter(this,R.layout.custom_array_adapter,taskArray,dateArray,timeArray,idArray, typeQuery);
         //ArrayAdapter<String> taskArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, taskArray);
         ListView taskListv = (ListView) findViewById(R.id.listView1);
 //        taskListv.setAdapter(taskArrayAdapter);
@@ -235,7 +279,7 @@ public class MainActivity extends ActionBarActivity {
 
                     Toast.makeText(getApplicationContext(), R.string.tarea_guardada,
                             Toast.LENGTH_LONG).show();
-                    populateList();
+                    populateList(query);
                 }else {
 
                     AlertDialog.Builder errorMessage = new AlertDialog.Builder(dialog.getContext());
@@ -276,7 +320,8 @@ public class MainActivity extends ActionBarActivity {
                             Toast.LENGTH_LONG).show();
                     bd.close();
                     dialog.dismiss();
-                    populateList();
+                    query=0;
+                    populateList(query);
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Error ",
                             Toast.LENGTH_LONG).show();
@@ -290,39 +335,9 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         deleteMessage.show();
-/*        //setting custom layout to dialog
-        dialog.setContentView(R.layout.layout_pop_deleteall);
-        dialog.setTitle(R.string.limpiarDB);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog.show();
-        btnCancelar = (Button)dialog.findViewById(R.id.btnCancelarDel);
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btnAccept = (Button)dialog.findViewById(R.id.btnYesDel);
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                try {
-                    bd.delete("tarea", null, null);
-                    Toast.makeText(getApplicationContext(), "La base de datos se vacio correctamente",
-                            Toast.LENGTH_LONG).show();
-                    bd.close();
-                    dialog.dismiss();
-                    populateList();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Error ",
-                            Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });*/
     }
+
     public void BuscarTarea(MenuItem item){
         llamarBaseDeDatos = false;
         Button btnCancelar;
@@ -353,7 +368,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 String nombreTarea = nameTask.getText().toString();
-                Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
+                Cursor c = bd.rawQuery("SELECT materia FROM TAREA where tarea_id=?" ,new String [] {nombreTarea});
                 if (c.moveToFirst()) {
                     Intent intent = new Intent(v.getContext(), detailActivity.class);
                     intent.putExtra(EXTRA_MESSAGE, nameTask.getText().toString());
@@ -373,27 +388,7 @@ public class MainActivity extends ActionBarActivity {
         if (llamarBaseDeDatos)
             llamarBaseDeDatos();
     }
-    public void BuscarTareaListener(String nameTareaList){
-        llamarBaseDeDatos = false;
-               DbHelper admin = new DbHelper(this,"agendadb", null, 1);
-        final SQLiteDatabase bd = admin.getWritableDatabase();
 
-
-               String nombreTarea = nameTareaList;
-                Cursor c = bd.rawQuery("SELECT materia FROM TAREA where nombre=?" ,new String [] {nombreTarea});
-                if (c.moveToFirst()) {
-                    Intent intent = new Intent(getBaseContext(),detailActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, nombreTarea);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(), "Esta vacia",
-                            Toast.LENGTH_LONG).show();
-
-                }
-
-
-
-            }
 
 
 

@@ -7,18 +7,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mycompany.myapplication.R;
 
-public class detailActivity extends Activity implements OnClickListener {
+public class detailItemActivity extends Activity implements View.OnClickListener {
 
 
     public EditText searchTarea,searchMateria,searchDescripcion;
@@ -55,7 +56,7 @@ public class detailActivity extends Activity implements OnClickListener {
         String[] campos = new String[]{"tarea_id", "nombre", "descripcion", "materia", "hora", "fecha"};
         String[] args = new String[]{message};
 
-        Cursor c = db.query("TAREA", campos, "tarea_id=?", args, null, null, null);
+        Cursor c = db.query("TAREA", campos, "nombre=?", args, null, null, null);
 
 
         if (c.moveToFirst()) {
@@ -66,8 +67,6 @@ public class detailActivity extends Activity implements OnClickListener {
             String horaTaskSearch = c.getString(4);
             String dateTaskSearch = c.getString(5);
 
-            Toast.makeText(getApplicationContext(), tareaIdTaskSearch,
-                    Toast.LENGTH_LONG).show();
             searchTarea.setText(nombreTaskSearch);
             searchMateria.setText(materiaTaskSearch);
             searchDate.setText(dateTaskSearch);
@@ -203,7 +202,7 @@ public class detailActivity extends Activity implements OnClickListener {
 
     public void returnHome() {
         Intent home_intent = new Intent(getApplicationContext(),
-               MainActivity.class)
+                MainActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(home_intent);
     }

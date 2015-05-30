@@ -10,7 +10,7 @@
     <string name="confirmDelReg">¿Seguro que desea borrar la tarea?</string>
     <string name="confirmUpdateReg">¿Seguro que desea modficar la tarea?</string>
     <string name="btn_Yes">Si</string>
-    <string name="buscar_tarea">Buscar Tarea</string>
+    <string name="buscar_tarea">Mostrar Todas las Tareas</string>
     <string name="limpiarDB">Eliminacion de Registros</string>
     <string name="title_activity_main_activity2">Main Activity 2</string>
     <string name="title_AddTask">Agregar Tarea</string>
@@ -39,4 +39,5 @@
     <string name="title_activity_detail_search_activiry">DetailSearchActiviry</string>
     <string name="error">Por favor llena los campos anteriores</string>
     <string name="ok">OK</string>
+    <string name="title_activity_detail_item">detailItemActivity</string>
 </resources>

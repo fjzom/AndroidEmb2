@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,8 +52,9 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<Tarea> getAllTareas()
+    public String getAllTareas(int id)
     {
+        String name="";
         List<Tarea> tareaList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM TAREA" ;
@@ -64,14 +67,18 @@ public class DbHelper extends SQLiteOpenHelper {
             do {
                 Tarea objTarea = new Tarea();
                 objTarea.setTarea_id(Integer.parseInt(cursor.getString(0)));
+
                 objTarea.setNombre(cursor.getString(1));
                 objTarea.setDescripcion(cursor.getString(2));
                 // Adding tarea to list
+                if(objTarea.getTarea_id()==id){name=objTarea.getNombre();
+                continue;
+                }
                 tareaList.add(objTarea);
             } while (cursor.moveToNext());
         }
 
-        return tareaList;
+        return name;
 
     }
     public List<String> tareaList(){
@@ -91,19 +98,59 @@ public class DbHelper extends SQLiteOpenHelper {
         return tareaLista;
     }
 
-    public List<String> getFieldFromTable(String fieldToSelect){
+    public List<String> getFieldFromTable(String fieldToSelect,int typeQuery){
         List<String> fieldList = new ArrayList<>();
-        String selectQuery = "SELECT " +fieldToSelect+" FROM TAREA";
-
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery,null);
+        switch(typeQuery) {
+            case 0:
+            String selectQuery = "SELECT " + fieldToSelect + " FROM TAREA";
 
-        if(cursor.moveToFirst()){
-            do {
-                String field;
-                field = cursor.getString(0);
-                fieldList.add(field);
-            } while (cursor.moveToNext());
+
+            Cursor cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    String field;
+                    field = cursor.getString(0);
+                    fieldList.add(field);
+                } while (cursor.moveToNext());
+            }
+                break;
+            case 1:
+
+                Calendar c = Calendar.getInstance();
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int month = c.get(Calendar.MONTH);
+                int year = c.get(Calendar.YEAR);
+                String today = day+"/"+(month+1)+"/"+year;
+                String[] arg = new String[]{today};
+                String selectQueryAll = "SELECT " + fieldToSelect + " FROM TAREA where fecha = ?";
+
+
+                Cursor cursor2 = db.rawQuery(selectQueryAll, arg);
+
+                if (cursor2.moveToFirst()) {
+                    do {
+                        String field;
+                        field = cursor2.getString(0);
+                        fieldList.add(field);
+                    } while (cursor2.moveToNext());
+                }else{
+                    String selectQuery3 = "SELECT " + fieldToSelect + " FROM TAREA";
+
+
+                    Cursor cursor3 = db.rawQuery(selectQuery3, null);
+
+                    if (cursor3.moveToFirst()) {
+                        do {
+                            String field;
+                            field = cursor3.getString(0);
+                            fieldList.add(field);
+                        } while (cursor3.moveToNext());
+                    }
+
+                }
+                break;
         }
         return fieldList;
     }
